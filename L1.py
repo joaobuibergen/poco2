@@ -208,7 +208,7 @@ def bc_left(w, a, psi, psi1, gamma_0):
     else:
         if a>=0:
             if psi==1:
-                w0 = 3*w[1]-3*w[2]+w[3]
+                w0 = 2*p-w[1]#-3*w[2]+w[3]
             else:
                 w0 = (p - psi*w[1])/(1-psi)
         else:
@@ -247,6 +247,8 @@ def L1_Boundary(u, K, w_left, w_right, flux_left, flux_right):
     #print("Boundary values:")
     
     #u[0]=bc_left(u, w_left, PSI[1], PSI1[1], flux_left)
+    #print(f" PSI[1]:  {PSI[1]}")
+    #print(f" w_left: {w_left}")
     u0=bc_left(u, w_left, PSI[1], PSI1[1], flux_left)
     #print(f" u[0]:  {u[0]}")
 

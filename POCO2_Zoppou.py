@@ -43,13 +43,18 @@ x0 = 1
 #
 
 L = 20  # Length 
-M = 20 # Number of physical grid cells
+M = 80 # Number of physical grid cells
 h = L / M  # Grid spacing (cell width)
 N = M+2 # Number of computational grid cells
 
 # Grid
+#  -0.5  0  0.5  1  1.5  2  2.5                                                    20 20.5 21 21.5
+#    |---x---|---x---|---x---|---x---|-........................-|---x---|---x---|---x---|---x---|
+#  j=0   0   1   1   2   2   3   3   4                                              M  M+1 M+1 M+2
 
-xb = np.linspace(x0-h,x0+L+h,N+1) # Coordinates of grid cell boundaries
+
+
+xb = np.linspace(-0.5,21.5,N+1) # Coordinates of grid cell boundaries
 
 xc = 0.5*(xb[1:]+xb[0:-1])
 
@@ -102,9 +107,9 @@ n = 0
 
 n_out = -1
 
-for n in range(1, 2):#J):
+for n in range(1, J):
 
-    c[n,:] = ops.step_splitting(c[n-1,:],dt,M,h,D,A,
+    c[n,:] = ops.step_splitting(c[n-1,:],dt,M,h,D,np.maximum(A,u0),
                                 p=[K,
                                    [c0*u0,0.0],
                                    [c0,0.0]])

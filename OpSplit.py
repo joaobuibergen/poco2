@@ -107,10 +107,10 @@ def fL1left(f1,c,h,a,dt):
     a1 = -0.5*dt*a*d1left(c,h)
 
     a2 = a**2*dt**2/8*d2left(c,h)
-    print(d1left(c,h))
-    print(d2left(c,h))
-    print(a1)
-    print(a2)
+    #print(d1left(c,h))
+    #print(d2left(c,h))
+    #print(a1)
+    #print(a2)
 
     return f1 + a1 + a2
 
@@ -174,16 +174,21 @@ def step_splitting(c,dt,M,h,D,a,p=None):
     """ Advance a time step with the operator splitting framework.
     """    
 
+    #print(f"  max c= {c.max()}")
+    #print(f"  min c= {c.min()}")
+
     # d(u_i)/dt = L1(u_i) = - d(W.u_i)/dz,     u_i(n) = c_i(n),     t in [n, n+1/2],                  (4)
 
     u = L1.L1_Advection(c,M,h,a,0.5*dt,full_step=False)
     #print(u.shape)
-    print(u[0])
+    #print(f"  u[0]= {u[0]}")
+    #print(f"  u[-1]= {u[-1]}")
 
     u[0]=fL1left(c[0],c,h,a[0],dt)
-    print(u[0])
+    #print(f"  u[0]= {u[0]}")
 
     u[-1]=fL1right(c[-1],c,h,a[-1],dt)
+    #print(f"  u[-1]= {u[-1]}")
 
     #print(f"  max u= {u.max()}")
     #print(f"  min u= {u.min()}")
@@ -191,10 +196,14 @@ def step_splitting(c,dt,M,h,D,a,p=None):
     # d(v_i)/dt = L2(v_i) = d/dz(-D.dv_i/dz),  v_i(n) = u_i(n+1/2), t in [n, n+1/2],                  (5)
 
     v = L2.L2_Diffusion(u,h,D,0.5*dt,full_step=False)
+    #print(f"  v[0]= {v[0]}")
+    #print(f"  v[-1]= {v[-1]}")
 
     v[0] = fL2left(u[0], u, D, h, dt)
 
     v[-1] = fL2left(u[-1], u, D, h, dt)
+    #print(f"  v[0]= {v[0]}")
+    #print(f"  v[-1]= {v[-1]}")
 
     #print(f"  max v= {v.max()}")
     #print(f"  min v= {v.min()}")
@@ -213,10 +222,14 @@ def step_splitting(c,dt,M,h,D,a,p=None):
     # d(v_i)/dt = L2(v_i) = d/dz(-D.dv_i/dz),  v_i(n+1/2) = w_i(n+1), t in [n+1/2, n+1],              (7)
 
     v = L2.L2_Diffusion(w,h,D,0.5*dt,full_step=False)
+    #print(f"  v[0]= {v[0]}")
+    #print(f"  v[-1]= {v[-1]}")
 
     v[0] = fL2left(w[0], w, D, h, dt)
 
     v[-1] = fL2left(w[-1], w, D, h, dt)
+    #print(f"  v[0]= {v[0]}")
+    #print(f"  v[-1]= {v[-1]}")
 
     #print(f"  max v= {v.max()}")
     #print(f"  min v= {v.min()}")
@@ -233,8 +246,14 @@ def step_splitting(c,dt,M,h,D,a,p=None):
     #print(f"  tmp2[1]= {tmp2[1]}")
     #print(tmp2)
 
-    v[0] = tmp1[0]+tmp2[0]
-    v[-1] = tmp1[1]+tmp2[1]
+    v[0] = 0.5*(tmp1[0]+tmp2[0])
+    v[-1] = 0.5*(tmp1[1]+tmp2[1])
+
+    #print(f"  v[0]= {v[0]}")
+    #print(f"  v[-1]= {v[-1]}")
+
+    #print(f"  max v= {v.max()}")
+    #print(f"  min v= {v.min()}")
 
     #print(f"  v[0]= {tmp1[0]+tmp2[0]}")
     #print(f"  v[-1]= {v[-1]}")
